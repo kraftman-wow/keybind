@@ -1,0 +1,9 @@
+## Interface: 40300
+## Title: KeyBind
+## Author: Kraftman
+## Version 1.55 Release
+## Notes: Easy key binder GUI
+## SavedVariablesPerCharacter: KeyBindSettings
+
+Layouts.lua
+KeyBind.lua
