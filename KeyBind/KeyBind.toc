@@ -1,9 +1,15 @@
-## Interface: 40300
+## Interface: 70000
 ## Title: KeyBind
 ## Author: Kraftman
 ## Version 1.55 Release
 ## Notes: Easy key binder GUI
 ## SavedVariablesPerCharacter: KeyBindSettings
 
+
 Layouts.lua
 KeyBind.lua
+KeyboardUI.lua
+ControlsUI.lua
+MouseUI.lua
+NewButtonUI.lua
+tooltip.lua
