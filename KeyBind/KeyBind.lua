@@ -6,7 +6,7 @@ TODO:
 multiple spec
 resize based on board
 mouse
---]]	
+--]]
 
 
 
@@ -22,7 +22,7 @@ local button = CreateFrame("Button", nil, UIParent, "SecureActionButtonTemplate"
 	button.bg:SetAllPoints(button)
 	button:SetPoint("CENTER", 0, -200)
 	button.bg:SetDrawLayer("BACKGROUND")
-	
+
 	button.text = button:CreateFontString(nil, "OVERLAY","GameFontNormal")
 	button.text:SetAllPoints(button)
 	button:SetSize(40, 40)
@@ -42,7 +42,7 @@ local Keyboard = CreateFrame("Frame", nil, UIParent) -- the frame holding the ke
 local tempframe = Keyboard -- a hack for the parenting of the button creations
 local SelectedFrame = nil --hack for the dropdown
 local modif = {} --table that stores the modifiers
-modif.CTRL = "" 
+modif.CTRL = ""
 modif.SHIFT = ""
 modif.ALT = ""
 
@@ -81,13 +81,13 @@ Controls.Slider = CreateFrame("Slider", "KeyBind_Slider1", Controls, "OptionsSli
 	_G[Controls.Slider:GetName().."High"]:SetText("1")
 	Controls.Slider:SetScript("OnValueChanged",
 				function(self) Keyboard:SetScale(self:GetValue()) Mouse:SetScale(self:GetValue())end)
-			
+
 	Controls.Slider:SetWidth(200)
 	Controls.Slider:SetHeight(20)
 	Controls.Slider:SetPoint("BOTTOMLEFT", Controls, "BOTTOMLEFT", 15, 15)
 
-		
-	
+
+
 Controls.AltCB = CreateFrame("CheckButton", "KeyBindAltCB", Controls, "ChatConfigCheckButtonTemplate");
 _G[Controls.AltCB:GetName().."Text"]:SetText ("Alt")
 Controls.AltCB:SetHitRectInsets(0,-40,0,0)
@@ -151,9 +151,9 @@ local DefaultBoard = KeyBindAllBoards.laptop
 
 Keyboard:SetWidth(1490)
 Keyboard:SetHeight(570)
-Keyboard:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-                                            edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-                                            tile = true, tileSize = 16, edgeSize = 16, 
+Keyboard:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                                            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                                            tile = true, tileSize = 16, edgeSize = 16,
                                             insets = { left = 4, right = 4, top = 4, bottom = 4 }});
 Keyboard:SetBackdropColor(0,0,0,0.8);
 Keyboard:SetPoint("CENTER", UIParent, "CENTER")
@@ -186,9 +186,9 @@ UIDropDownMenu_Initialize(KBStanceDD, StanceDD_Initialize)
 
 
 local KBTooltip = CreateFrame("Frame", "KeyBindTooltip", Controls) --tooltip to show the name of the macro/spell/action
-KBTooltip:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-                                            edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-                                            tile = true, tileSize = 16, edgeSize = 16, 
+KBTooltip:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                                            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                                            tile = true, tileSize = 16, edgeSize = 16,
                                             insets = { left = 4, right = 4, top = 4, bottom = 4 }});
 
 KBTooltip:SetBackdropColor(0,0,0,1);
@@ -216,13 +216,13 @@ local function ColorHighlight(button) --change the colour of the highlight textu
 	elseif button.type =="none" then
 		button:SetBackdropBorderColor(1,1,1,1)
 	end
-	
+
 	KBTooltip:Hide()
 	GameTooltip:Hide()
 end
 
-local function ButtonMouseOver(button) --change the tooltip and highlight 
-	
+local function ButtonMouseOver(button) --change the tooltip and highlight
+
 	KBTooltip:SetPoint("TOPLEFT", button, "TOPRIGHT", 10, 0)
 	KBTooltip.title:SetText((button.label:GetText() or "")..":\n"..(button.macro:GetText() or ""))
 	if button.slot then
@@ -235,7 +235,7 @@ local function ButtonMouseOver(button) --change the tooltip and highlight
 	end
 	KBTooltip:SetWidth(KBTooltip.title:GetWidth()+10)
 	KBTooltip:SetHeight(KBTooltip.title:GetHeight()+10)
-	
+
 	if (KBTooltip:GetWidth() < 15) or button.macro:GetText() == "" then
 		KBTooltip:Hide()
 	else
@@ -250,10 +250,10 @@ local function NewButton(parent) -- creates new buttons to add the the keyboard
 	local button = CreateFrame("Frame", nil, parent) -- parent it to the keyboard
 	button:SetMovable(true)
 	button:EnableMouse(true)
-	
-	button:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-                                            edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-                                            tile = true, tileSize = 16, edgeSize = 16, 
+
+	button:SetBackdrop({bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+                                            edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+                                            tile = true, tileSize = 16, edgeSize = 16,
                                             insets = { left = 4, right = 4, top = 4, bottom = 4 }});
 	button:SetBackdropColor(0,0,0,0.8);
 	button.label = button:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -273,7 +273,7 @@ local function NewButton(parent) -- creates new buttons to add the the keyboard
 	button.macro:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -15, 15)
 	button.macro:SetText("")
 
-	
+
 	button.icon = button:CreateTexture()
 	button.icon:SetPoint("TOPLEFT", button, "TOPLEFT", 5, -5)
 	button.icon:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -5, 5)
@@ -282,26 +282,26 @@ local function NewButton(parent) -- creates new buttons to add the the keyboard
 	button:SetScript("OnEnter", ButtonMouseOver)
 	button:SetScript("OnLeave", ColorHighlight)
 	button:SetScript("OnMouseDown",function() end)
-	button:SetScript("OnMouseUp",function(self, mousebutton) 
+	button:SetScript("OnMouseUp",function(self, mousebutton)
 													if mousebutton == "LeftButton" then
 														infoType, info1, info2 = GetCursorInfo()
-														
+
 														if infoType == "spell" then
 															local spellname = GetSpellBookItemName(info1, info2 )
 														SelectedFrame = self
 														--print(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), spellname)
 															SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), spellname)
 															ClearCursor()
-															SaveBindings(2) 
+															SaveBindings(2)
 															addon.RefreshKeys()
 														end
 													elseif mousebutton == "RightButton" then
-														SelectedFrame = self 
-														ToggleDropDownMenu(1, nil, KBDropDown, self, 30, 20) 
-														
+														SelectedFrame = self
+														ToggleDropDownMenu(1, nil, KBDropDown, self, 30, 20)
+
 													end
 												end)
-		return button												
+		return button
 end
 
 Mouse.Button1 = NewButton(Mouse)
@@ -335,14 +335,14 @@ Mouse.Button5:SetPoint("TOPLEFT", -48, -141)
 local function SwitchBoard(board)
 	if KeyBindAllBoards[board] or KBEditLayouts[board] then
 		board = KeyBindAllBoards[board] or KBEditLayouts[board]
-	
+
 		local cx, cy = Keyboard:GetCenter()
 		local left, right, top, bottom = cx, cx, cy, cy
-	
+
 		for i = 1, #board do
-			
+
 			local Key = Keys[i] or NewButton()
-			
+
 			if board[i][5] then
 				Key:SetWidth(board[i][5])
 				Key:SetHeight(board[i][6])
@@ -350,20 +350,20 @@ local function SwitchBoard(board)
 				Key:SetWidth(85)
 				Key:SetHeight(85)
 			end
-				
-				
+
+
 			if not Keys[i] then
 				Keys[i] = Key
 			end
-				
+
 			Key:SetPoint("TOPLEFT", Keyboard, "TOPLEFT", board[i][3], board[i][4])
-				
+
 			Key.label:SetText(board[i][1])
 			tempframe = Key
 			tempframe:Show()
-				
+
 			local l, r, t, b = Key:GetLeft(), Key:GetRight(), Key:GetTop(), Key:GetBottom()
-		
+
 			if l < left then
 				left = l
 			end
@@ -377,46 +377,46 @@ local function SwitchBoard(board)
 				bottom = b
 			end
 		end
-		
+
 		Keyboard:SetWidth(right-left + 15)
 		Keyboard:SetHeight(top-bottom+ 10)
-	
+
 	end
-	
+
 end
 
 local function CheckModifiers()
 	for v, button in pairs(Keys) do --change the events for shift/ctrl/alt
 		if modif[button.label:GetText()] then
-			
+
 			button:SetScript("OnEnter", nil)
 			button:SetScript("OnLeave", nil)
 			button:SetScript("OnMouseDown", nil)
 			button:SetScript("OnMouseUp", nil)
-			
+
 			button:SetScript("OnMouseDown", function(self)  end)
 			button:SetScript("OnEnter", function(self)  end)
-			
-			
-			button:SetScript("OnLeave", function(self) 
-											if self.active then 
-												
-											else 
-												 
+
+
+			button:SetScript("OnLeave", function(self)
+											if self.active then
+
+											else
+
 											end
 										end)
-			button:SetScript("OnMouseUp", function(self) 
-										if self.active then 
+			button:SetScript("OnMouseUp", function(self)
+										if self.active then
 											self.active = false
 											modif[button.label:GetText()] = ""
 											addon.RefreshKeys()
-											
-										else 
+
+										else
 											self.active = true
 											modif[button.label:GetText()] = button.label:GetText().."-"
 											addon.RefreshKeys()
-										
-										end 
+
+										end
 								end)
 		end
 	end
@@ -424,7 +424,7 @@ end
 
 local function SetKey(button) -- set the texture/text for the key
 	local spell = GetBindingAction(modif.CTRL..modif.SHIFT..modif.ALT..(button.label:GetText() or "")) or ""
-	
+
 	if spell:find("^SPELL") then
 		button.icon:Show()
 		spell = spell:match("SPELL%s(.*)")
@@ -452,9 +452,9 @@ local function SetKey(button) -- set the texture/text for the key
 		for i = 1, GetNumBindings() do
 		local a = GetBinding(i)
 			if spell:find(a) then
-				
+
 				local slot = spell:match("ACTIONBUTTON(%d+)") or spell:match("BT4Button(%d+)")
-				
+
 				if slot then
 					button.icon:SetTexture(GetActionTexture(slot))
 					button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
@@ -465,34 +465,34 @@ local function SetKey(button) -- set the texture/text for the key
 				spell = GetBindingText(spell, "BINDING_NAME_") or spell
 				button.type = "interface"
 				ColorHighlight(button)
-				
+
 				found = true
-				
+
 				--break -- ?
-			end	
+			end
 		end
 		if not found then
 			button.type = "none"
 			ColorHighlight(button)
-			
+
 		end
 	end
 	button.macro:SetText(spell)
 end
 
 function addon.RefreshKeys() --refresh all the highlights and text for the buttons
-	for i = 1, #Keys do 
+	for i = 1, #Keys do
 		Keys[i]:Hide()
 	end
-	
+
 	SwitchBoard(KeyBindSettings.currentboard or DefaultBoard)
 	CheckModifiers()
 
 
-	for i = 1, #Keys do 
+	for i = 1, #Keys do
 		SetKey(Keys[i])
 	end
-	
+
 	for i = 1, 5 do
 		SetKey(Mouse["Button"..i])
 	end
@@ -515,22 +515,22 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 	level = level or 1
 	local info = UIDropDownMenu_CreateInfo()
 	local value = UIDROPDOWNMENU_MENU_VALUE
-	
+
 	if level == 1 then
 		info.text = "Unbind Key"
 		info.value = 1
 		info.tooltipTitle = "Unbind"
 		info.tooltipText = "Removes all bindings from the selected key"
-		info.func = function() 
+		info.func = function()
 								if SelectedFrame.label ~= "" then
-									SetBinding(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""))	
+									SetBinding(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""))
 									SelectedFrame.macro:SetText("")
-									addon.RefreshKeys() 
-									SaveBindings(2) 
+									addon.RefreshKeys()
+									SaveBindings(2)
 								end
 							end
 		UIDropDownMenu_AddButton(info, level)
-		
+
 		info.text = "General Macro"
 		info.value = "General Macro"
 		info.tooltipTitle = "Macro"
@@ -538,7 +538,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		info.hasArrow = true
 		info.func = function() end
 		UIDropDownMenu_AddButton(info, level)
-		
+
 			info.text = "Player Macro"
 		info.value = "Player Macro"
 		info.tooltipTitle = "Macro"
@@ -546,7 +546,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		info.hasArrow = true
 		info.func = function() end
 		UIDropDownMenu_AddButton(info, level)
-		
+
 		info.text = "Spell"
 		info.value = "Spell"
 		info.tooltipTitle = "Spell"
@@ -554,7 +554,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		info.hasArrow = true
 		info.func = function() end
 		UIDropDownMenu_AddButton(info, level)
-		
+
 		info.text = "UI Bind"
 		info.value = "UIBind"
 		info.tooltipTitle = "UI Bind"
@@ -562,7 +562,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		info.hasArrow = true
 		info.func = function() end
 		UIDropDownMenu_AddButton(info, level)
-		
+
 		info.text = "Items"
 		info.value = "Bag"
 		info.tooltipTitle = "Items"
@@ -570,7 +570,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		info.hasArrow = true
 		info.func = function() end
 		UIDropDownMenu_AddButton(info, level)
-	
+
 		info.text = "Mounts/pets"
 		info.value = "MountPet"
 		info.tooltipTitle = "Mounts & Pets"
@@ -578,7 +578,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		info.hasArrow = true
 		info.func = function() end
 		UIDropDownMenu_AddButton(info, level)
-	
+
 	elseif level ==2 then
 		if value == "Spell" then
 			for i = 1, GetNumSpellTabs() do
@@ -586,7 +586,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 				if not name then
 					--break
 				end
-				
+
 				info.text = name
 				info.value = "Tab"..i
 				info.tooltipTitle = name
@@ -594,21 +594,21 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 				info.func = function() end
 				UIDropDownMenu_AddButton(info, level)
 			end
-		end		
-   
+		end
+
 		if value == "MountPet" then
 			info.text = "Mount"
 			info.value = "MOUNT"
 			info.hasArrow = true
 			UIDropDownMenu_AddButton(info, level)
-			
+
 			info.text = "Pet"
 			info.value = "CRITTER"
 			info.hasArrow = true
 			UIDropDownMenu_AddButton(info, level)
 		end
-	
-		
+
+
 		if value == "General Macro" then
 			for i = 1,36 do
 			local title, iconTexture, body = GetMacroInfo(i)
@@ -621,10 +621,10 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 				info.func = function(self) SetBindingMacro(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), title) SaveBindings(2) addon.RefreshKeys() end
 				UIDropDownMenu_AddButton(info, level)
 				end
-			
+
 			end
 		end
-		
+
 		if value == "Player Macro" then
 			for i = 37, 54 do
 			local title, iconTexture, body = GetMacroInfo(i)
@@ -639,11 +639,11 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 				end
 			end
 		end
-		
+
 		if value == "UIBind" then
 			for i = 1, GetNumBindings() do
 				local name, bind = GetBinding(i)
-				
+
 				if name:find("^HEADER") then
 					local title = _G["BINDING_"..name]
 					if title and not (title == "") then
@@ -658,18 +658,18 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 				end
 			end
 		end
-		
+
 		if value == "Bag" then
-			for bag = 0,NUM_BAG_SLOTS do 
+			for bag = 0,NUM_BAG_SLOTS do
 				local name = GetBagName(bag)
-				
+
 				info.text = name
 				info.value = "bag"..bag
 				info.tooltipTitle = name
 				info.tooltipText = ""
 				info.hasArrow = true
 				info.func = function(self) end
-				UIDropDownMenu_AddButton(info, level)	
+				UIDropDownMenu_AddButton(info, level)
 			end
 		end
 	elseif level == 3 then
@@ -693,7 +693,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 			local bag = value:match("bag(%d)")
 			for slot = 1,GetContainerNumSlots(bag) do
 				local item = GetContainerItemLink(bag, slot)
-				local texture = GetContainerItemInfo(bag,slot) 
+				local texture = GetContainerItemInfo(bag,slot)
 				if IsUsableItem(item) then
 					info.text = item
 					info.value = bag
@@ -703,14 +703,14 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 					info.func = function(self) SetBindingItem(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), item) SaveBindings(2) addon.RefreshKeys() end
 					UIDropDownMenu_AddButton(info, level)
 				end
-			end 
-		
+			end
+
 		elseif value:find("^UIBind") then
 		local value = value:match("^UIBind(%d+)")
 			for i = tonumber(value), GetNumBindings() do
 			i = i + 1
 				local name, bind = GetBinding(i)
-				
+
 				if name:find("^HEADER") then
 				return end
 				local title = name
@@ -723,24 +723,24 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 					UIDropDownMenu_AddButton(info, level)
 			end
 		elseif value:find("^MOUNT") then
-			for i = 1, GetNumCompanions(value) do
-				local creatureID, creatureName, spellID, icon =  GetCompanionInfo(value, i)
-					local name = GetSpellInfo(spellID)
-					
-					info.text = creatureName
-					info.value = i
-					info.tooltipTitle = creatureName
-					info.tooltipText = "Actions related to "
-					info.hasArrow = false
-					info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), name) SaveBindings(2) addon.RefreshKeys() end
-					UIDropDownMenu_AddButton(info, level)
-				
+			local mountIDs = C_MountJournal.GetMountIDs()
+			for k,mountID in pairs(mountIDs) do
+				local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, hideOnChar, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountID)
+				local name = GetSpellInfo(spellID)
+
+				info.text = creatureName
+				info.value = i
+				info.tooltipTitle = creatureName
+				info.tooltipText = "Actions related to "
+				info.hasArrow = false
+				info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), name) SaveBindings(2) addon.RefreshKeys() end
+				UIDropDownMenu_AddButton(info, level)
 			end
 		elseif value:find("^CRITTER") then
-			for i = 1, GetNumCompanions(value) do
-				local creatureID, creatureName, spellID, icon =  GetCompanionInfo(value, i)
+			for i = 1, C_PetBattles.GetNumPets() do
+				local creatureID, creatureName, spellID, icon =   C_PetJournal.GetPetInfoByIndex(i)
 					local name = spellID
-					
+
 					info.text = creatureName
 					info.value = i
 					info.tooltipTitle = creatureName
@@ -748,13 +748,13 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 					info.hasArrow = false
 					info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), name) SaveBindings(2) addon.RefreshKeys() end
 					UIDropDownMenu_AddButton(info, level)
-				
+
 			end
 		end
-	end	
+	end
 end
 
---IsPassiveSpell(spellID, "bookType") 
+--IsPassiveSpell(spellID, "bookType")
 
 
 UIDropDownMenu_Initialize(DropDown, DropDown_Initialize, "MENU")
@@ -765,17 +765,17 @@ local function KeyHandler(self, key)
 	if modif[key] then
 		for v, button in pairs(Keys) do
 			if modif[button.label:GetText()] then
-				if button.active then 
+				if button.active then
 					button.active = false
 					modif[button.label:GetText()] = ""
 					addon.RefreshKeys()
-					
-				else 
+
+				else
 					button.active = true
 					modif[button.label:GetText()] = button.label:GetText().."-"
 					addon.RefreshKeys()
-					
-				end 
+
+				end
 			end
 		end
 	end
@@ -795,7 +795,7 @@ local function ChangeBoardDD_Initialize(self, level) -- the menu items, needs a 
 		level = level or 1
 	local info = UIDropDownMenu_CreateInfo()
 	local value = UIDROPDOWNMENU_MENU_VALUE
-		
+
 	info.colorCode = "|cFF31BD22"
 	for name, buttons in pairs(KeyBindAllBoards) do
 		info.text = name
@@ -803,13 +803,13 @@ local function ChangeBoardDD_Initialize(self, level) -- the menu items, needs a 
 		info.func = function() KeyBindSettings.currentboard = name addon.RefreshKeys() UIDropDownMenu_SetText(self, name) end
 		UIDropDownMenu_AddButton(info, level)
 	end
-	
-	
+
+
 	info.colorCode = "|cFFFFFFFF"
 	if KBEditLayouts then
 		for name in pairs(KBEditLayouts) do
 			info.text = name
-			
+
 			--set color
 			info.value = name
 			info.func = function() KeyBindSettings.currentboard = name addon.RefreshKeys() UIDropDownMenu_SetText(self, name) end
@@ -817,7 +817,7 @@ local function ChangeBoardDD_Initialize(self, level) -- the menu items, needs a 
 		end
 	end
 end
-	
+
 
 UIDropDownMenu_Initialize(KBChangeBoardDD, ChangeBoardDD_Initialize)
 
