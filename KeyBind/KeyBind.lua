@@ -285,7 +285,6 @@ local function NewButton(parent) -- creates new buttons to add the the keyboard
 	button:SetScript("OnMouseUp",function(self, mousebutton)
 													if mousebutton == "LeftButton" then
 														infoType, info1, info2 = GetCursorInfo()
-
 														if infoType == "spell" then
 															local spellname = GetSpellBookItemName(info1, info2 )
 														SelectedFrame = self
@@ -422,30 +421,42 @@ local function CheckModifiers()
 	end
 end
 
+local function AddSpell(button)
+	button.icon:Show()
+	spell = spell:match("SPELL%s(.*)")
+	button.icon:SetTexture(GetSpellTexture(spell))
+	button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	button.type = "spell"
+	ColorHighlight(button)
+end
+
+local function AddMacro(button)
+	button.icon:Show()
+	spell = spell:match("MACRO%s(.*)")
+	button.icon:SetTexture(select(2, GetMacroInfo(spell)))
+	button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	button.type = "macro"
+	ColorHighlight(button)
+end
+
+local function AddItem(button)
+	button.icon:Show()
+	spell = spell:match("ITEM%s(.*)")
+	button.icon:SetTexture(select(10, GetItemInfo(spell)))
+	button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	button.type = "item"
+	ColorHighlight(button)
+end
+
 local function SetKey(button) -- set the texture/text for the key
 	local spell = GetBindingAction(modif.CTRL..modif.SHIFT..modif.ALT..(button.label:GetText() or "")) or ""
 
 	if spell:find("^SPELL") then
-		button.icon:Show()
-		spell = spell:match("SPELL%s(.*)")
-		button.icon:SetTexture(GetSpellTexture(spell))
-		button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-		button.type = "spell"
-		ColorHighlight(button)
+		AddSpell(button)
 	elseif spell:find("^MACRO") then
-		button.icon:Show()
-		spell = spell:match("MACRO%s(.*)")
-		button.icon:SetTexture(select(2, GetMacroInfo(spell)))
-		button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-		button.type = "macro"
-		ColorHighlight(button)
+		AddMacro(button)
 	elseif spell:find("^ITEM") then
-		button.icon:Show()
-		spell = spell:match("ITEM%s(.*)")
-		button.icon:SetTexture(select(10, GetItemInfo(spell)))
-		button.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-		button.type = "item"
-		ColorHighlight(button)
+		AddItem(button)
 	else
 		button.icon:Hide()
 		local found = false
@@ -488,7 +499,6 @@ function addon.RefreshKeys() --refresh all the highlights and text for the butto
 	SwitchBoard(KeyBindSettings.currentboard or DefaultBoard)
 	CheckModifiers()
 
-
 	for i = 1, #Keys do
 		SetKey(Keys[i])
 	end
@@ -498,10 +508,7 @@ function addon.RefreshKeys() --refresh all the highlights and text for the butto
 	end
 end
 
-
-
 --dropdown stuffs:
-
 
 
 local DropDown = CreateFrame("Frame", "KBDropDown", Keyboard, "UIDropDownMenuTemplate")
@@ -603,15 +610,13 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 			UIDropDownMenu_AddButton(info, level)
 
 			info.text = "Pet"
-			info.value = "CRITTER"
-			info.hasArrow = true
-			UIDropDownMenu_AddButton(info, level)
-		end
-
-
-		if value == "General Macro" then
-			for i = 1,36 do
-			local title, iconTexture, body = GetMacroInfo(i)
+			info.value = "CRITTER"o.text = GetBindingText(title, "BINDING_NAME_")
+					info.value = j
+					info.tooltipTitle = title
+					info.tooltipText = "Actions related to "..title
+					info.hasArrow = false
+					info.func = function(self) SetBinding(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), title) SaveBindings(2) addon.RefreshKeys() end
+					UIDropDo(i)
 				if title then
 				info.text = title
 				info.value = title
@@ -708,7 +713,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		elseif value:find("^UIBind") then
 		local value = value:match("^UIBind(%d+)")
 			for i = tonumber(value), GetNumBindings() do
-			i = i + 1
+				i = i + 1
 				local name, bind = GetBinding(i)
 
 				if name:find("^HEADER") then
