@@ -17,7 +17,6 @@ local Keys = {} --stores the key buttons once they are created
 
 local DefaultBoard = KeyBindAllBoards.laptop
 
-local SelectedFrame = nil --hack for the dropdown
 local modif = {} --table that stores the modifiers
 modif.CTRL = ""
 modif.SHIFT = ""
@@ -27,7 +26,6 @@ addon.modif = modif
 
 function addon:Load()
 	if fighting then
-		print('disabled in combat')
 		return
 	end
 
@@ -41,7 +39,34 @@ function addon:Load()
 	controls:Show()
 	keyboard:Show()
 	self:LoadMounts()
+	self:LoadSpells()
+	self:LoadDropDown()
 	self:RefreshKeys()
+end
+
+function addon:LoadDropDown()
+	self.menu = {}
+
+end
+
+function addon:LoadSpells()
+	self.spells = {}
+	for i = 1, GetNumSpellTabs() do
+		local name, texture, offset, numSpells = GetSpellTabInfo(i);
+		self.spells[name] = {}
+		print(name)
+		if not name then
+			--break
+		end
+
+		for j = offset+1, (offset+numSpells) do
+			local spellName = GetSpellBookItemName(j, BOOKTYPE_SPELL)
+			if spellName and not (IsPassiveSpell(j, BOOKTYPE_SPELL)) then
+				tinsert(self.spells[name], spellName)
+			end
+		end
+	end
+
 end
 
 function addon:LoadMounts()
@@ -52,6 +77,7 @@ function addon:LoadMounts()
 	self.alphMounts = {}
 
 	for _,mountID in pairs(mountIDs) do
+		print(mountID)
 		local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, hideOnChar, isCollected = C_MountJournal.GetMountInfoByID(mountID)
 		local mountInfo = {
 			creatureName = creatureName,
@@ -74,7 +100,6 @@ function addon:LoadMounts()
 		end
 		if not self.mountCategories[sourceType] then
 			self.mountCategories[sourceType] = true
-			print(sourceType)
 		end
 	end
 end
@@ -309,7 +334,6 @@ local function LoadDropDownMounts(info, value, level)
 	local mountList = value:find("^FAVMOUNT") and addon.favMounts or addon.mounts
 	if value:find("^ALPHMOUNT:") then
 		local alph = value:match("^ALPHMOUNT:(.+)")
-		print(alph)
 		mountList = addon.alphMounts[alph]
 	end
 	for mountID,_ in pairs(mountList) do
@@ -320,7 +344,7 @@ local function LoadDropDownMounts(info, value, level)
 		info.tooltipTitle = mount.creatureName
 		info.tooltipText = "Actions related to "
 		info.hasArrow = false
-		info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), mount.creatureName) SaveBindings(2) addon:RefreshKeys() end
+		info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""), mount.creatureName) SaveBindings(2) addon:RefreshKeys() end
 		UIDropDownMenu_AddButton(info, level)
 
 	end
@@ -337,9 +361,9 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 		info.tooltipTitle = "Unbind"
 		info.tooltipText = "Removes all bindings from the selected key"
 		info.func = function()
-								if SelectedFrame.label ~= "" then
-									SetBinding(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""))
-									SelectedFrame.macro:SetText("")
+								if addon.currentKey.label ~= "" then
+									SetBinding(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""))
+									addon.currentKey.macro:SetText("")
 									addon:RefreshKeys()
 									SaveBindings(2)
 								end
@@ -396,15 +420,10 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 
 	elseif level ==2 then
 		if value == "Spell" then
-			for i = 1, GetNumSpellTabs() do
-				local name, texture, offset, numSpells = GetSpellTabInfo(i);
-				if not name then
-					--break
-				end
-
-				info.text = name
-				info.value = "Tab"..i
-				info.tooltipTitle = name
+			for tabName, v in pairs(addon.spells) do
+				info.text = tabName
+				info.value = 'tab:'..tabName
+				info.tooltipTitle = tabName
 				info.hasArrow = true
 				info.func = function() end
 				UIDropDownMenu_AddButton(info, level)
@@ -438,7 +457,8 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 				info.tooltipTitle = title
 				info.tooltipText = body
 				info.hasArrow = false
-				info.func = function(self) SetBindingMacro(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), title) SaveBindings(2) addon:RefreshKeys() end
+				info.func = function(self) SetBindingMacro(modif.CTRL..modif.SHIFT..modif.ALT..(
+					addon.currentKey.label:GetText() or ""), title) SaveBindings(2) addon:RefreshKeys() end
 				UIDropDownMenu_AddButton(info, level)
 				end
 
@@ -454,7 +474,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 				info.tooltipTitle = title
 				info.tooltipText = body
 				info.hasArrow = false
-				info.func = function(self) SetBindingMacro(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), title) SaveBindings(2) addon:RefreshKeys() end
+				info.func = function(self) SetBindingMacro(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""), title) SaveBindings(2) addon:RefreshKeys() end
 				UIDropDownMenu_AddButton(info, level)
 				end
 			end
@@ -493,21 +513,14 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 			end
 		end
 	elseif level == 3 then
-		if value:find("Tab") then
-			for i = 1, GetNumSpellTabs() do
-				if value == "Tab"..i then
-					local temp, texture, offset, numSlots = GetSpellTabInfo(i);
-					for j = offset+1, (offset+numSlots) do
-						local spellName, spellSubName = GetSpellBookItemName(j, BOOKTYPE_SPELL)
-							if spellName and not (IsPassiveSpell(j, BOOKTYPE_SPELL)) then
-								info.text = spellName
-								info.value = spellName
-								info.hasArrow = false
-								info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), spellName) SaveBindings(2) addon:RefreshKeys() end
-								UIDropDownMenu_AddButton(info, level)
-							end
-					end
-				end
+		if value:find("^tab:") then
+			local tabName = value:match('^tab:(.+)')
+			for k,spellName in pairs(addon.spells[tabName]) do
+				info.text = spellName
+				info.value = spellName
+				info.hasArrow = false
+				info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""), spellName) SaveBindings(2) addon:RefreshKeys() end
+				UIDropDownMenu_AddButton(info, level)
 			end
 		elseif value:find("bag") then
 			local bag = value:match("bag(%d)")
@@ -520,7 +533,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 					info.tooltipTitle = item
 					info.tooltipText = item
 					info.hasArrow = false
-					info.func = function(self) SetBindingItem(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), item) SaveBindings(2) addon:RefreshKeys() end
+					info.func = function(self) SetBindingItem(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""), item) SaveBindings(2) addon:RefreshKeys() end
 					UIDropDownMenu_AddButton(info, level)
 				end
 			end
@@ -539,7 +552,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 					info.tooltipTitle = title
 					info.tooltipText = "Actions related to "..title
 					info.hasArrow = false
-					info.func = function(self) SetBinding(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), title) SaveBindings(2) addon:RefreshKeys() end
+					info.func = function(self) SetBinding(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""), title) SaveBindings(2) addon:RefreshKeys() end
 					UIDropDownMenu_AddButton(info, level)
 			end
 
@@ -563,7 +576,7 @@ local function DropDown_Initialize(self, level) -- the menu items, needs a clean
 					info.tooltipTitle = creatureName
 					info.tooltipText = "Actions related to "
 					info.hasArrow = false
-					info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), name) SaveBindings(2) addon:RefreshKeys() end
+					info.func = function(self) SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""), name) SaveBindings(2) addon:RefreshKeys() end
 					UIDropDownMenu_AddButton(info, level)
 
 			end
@@ -578,7 +591,6 @@ end
 
 
 function addon:CreateDropDown()
-	print(self.keyboardFrame)
 	local DropDown = CreateFrame("Frame", "KBDropDown", self.keyboardFrame, "UIDropDownMenuTemplate")
 	DropDown:SetPoint("CENTER")
 	UIDropDownMenu_SetWidth(DropDown, 65)

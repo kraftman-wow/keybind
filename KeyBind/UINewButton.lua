@@ -44,15 +44,15 @@ function addon:NewButton(parent) -- creates new buttons to add the the keyboard
 
 														if infoType == "spell" then
 															local spellname = GetSpellBookItemName(info1, info2 )
-														SelectedFrame = self
+														addon.currentKey = self
 														--print(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), spellname)
-															SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(SelectedFrame.label:GetText() or ""), spellname)
+															SetBindingSpell(modif.CTRL..modif.SHIFT..modif.ALT..(addon.currentKey.label:GetText() or ""), spellname)
 															ClearCursor()
 															SaveBindings(2)
 															addon:RefreshKeys()
 														end
 													elseif mousebutton == "RightButton" then
-														SelectedFrame = self
+														addon.currentKey = self
 														ToggleDropDownMenu(1, nil, KBDropDown, self, 30, 20)
 
 													end

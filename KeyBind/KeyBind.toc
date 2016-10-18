@@ -8,8 +8,8 @@
 
 Layouts.lua
 KeyBind.lua
-KeyboardUI.lua
-ControlsUI.lua
-MouseUI.lua
-NewButtonUI.lua
+UIKeyboard.lua
+UIControls.lua
+UIMouse.lua
+UINewButton.lua
 tooltip.lua
