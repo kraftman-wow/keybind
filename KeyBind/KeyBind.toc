@@ -1,7 +1,7 @@
 ## Interface: 70000
 ## Title: KeyBind
 ## Author: Kraftman
-## Version 2.0 Release
+## Version 2.0 Release 
 ## Notes: Easy key binder GUI
 ## SavedVariablesPerCharacter: KeyBindSettings
 
